@@ -1,6 +1,6 @@
 'use strict';
 
-import BinaryMatrix from './binary_matrix';
+import BinaryMatrix from './binary_matrix.js';
 
 /**
  * Solution class.

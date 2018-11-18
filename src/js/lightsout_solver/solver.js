@@ -7,8 +7,16 @@
 'use strict';
 
 
-import BinaryMatrixOverlay from './overlay';
-import cellId from './cell_id';
+import BinaryMatrixOverlay from './overlay.js';
+import CellId from './cell_id.js';
+
+
+/**
+ * @typedef {{i: Number, j: Number}} CID
+ * @typedef {Map<CID, boolean>} Assumption
+ * @typedef {Array<Assumption>} Assumptions
+ * @typedef {Array<Assumptions>} AssumptionsStack
+ */
 
 
 /**
@@ -19,43 +27,35 @@ let findStatesByPresentation = function (presentation) {
     /** @type State[] */
     let states = [];
 
-    let overlay = new BinaryMatrixOverlay(size);
-
-    /** @typedef {Map<{i: Number, j: Number}, boolean>} Assumption */
-    /** @type Array<Array<Assumption>> */
-    let assumptions = [];
+    /** @type AssumptionsStack */
+    let assumptionsStack = [];
 
     /** @type Array<Number> */
-    let assumptionsIndexes = [];
+    let assumptionsIndexesStack = [];
 
-    let size = presentation.size;
-    let m = presentation.items;
-    let idxr = new _Indexer(size);
     let pos = 0;
-    let id = idxr.get(pos);
-    let value = m[id.i][id.j];
+    let size = presentation.size;
+    let indexer = new _Indexer(size);
+    let id = indexer.get(pos);
+    let value = presentation.items[id.i][id.j];
+    let overlay = new BinaryMatrixOverlay(size);
 
-    overlay.push(new Map());
-    assumptions.push(_makeAssumptions(size, id, value, overlay));
-    assumptionsIndexes.push(-1);
+    assumptionsStack.push(_makeAssumptions(size, id, value, overlay));
+    assumptionsIndexesStack.push(-1);
 
-    while (assumptions.length !== 0) {
-        // Increment top layer assumption index
-        let assumptionIdx = ++assumptionsIndexes[assumptionsIndexes.length - 1];
-        let nAssumptionsAvailable = assumptions[assumptions.length - 1].length;
-
-        if (assumptionIdx > (nAssumptionsAvailable - 1)) {
-            // If we run out of assumptions for current layer
+    while (assumptionsStack.length !== 0) {
+        let assumptionIndex = ++assumptionsIndexesStack[assumptionsIndexesStack.length - 1];
+        let assumptionsAvailableCount = assumptionsStack[assumptionsStack.length - 1].length;
+        if (assumptionIndex >= assumptionsAvailableCount) {
             pos--;
             overlay.pop();
-            assumptions.pop();
-            assumptionsIndexes.pop();
+            assumptionsStack.pop();
+            assumptionsIndexesStack.pop();
             continue;
         }
 
-        // Get next assumption and push into overlay
-        let assumption = assumptions[assumptions.length - 1][assumptionIdx];
-        overlay.push(assumption);
+        let nextAssumption = assumptionsStack[assumptionsStack.length - 1][assumptionIndex];
+        overlay.push(nextAssumption);
 
         if (pos === (size * size - 1) && overlay.hasAllValues()) {
             states.push(overlay.toState());
@@ -63,21 +63,18 @@ let findStatesByPresentation = function (presentation) {
             continue;
         }
 
-        pos++;
-        id = idxr.get(pos);
-        value = m[id.i][id.j];
-
-        try {
-            assumptions.push(_makeAssumptions(size, id, value, overlay));
-        } catch {
+        id = indexer.get(++pos);
+        value = presentation.items[id.i][id.j];
+        let newAssumptions = _makeAssumptions(size, id, value, overlay);
+        if (newAssumptions === null) {
             pos--;
             overlay.pop();
             continue;
         }
 
-        assumptionsIndexes.push(-1);
+        assumptionsStack.push(newAssumptions);
+        assumptionsIndexesStack.push(-1);
     }
-
 
     return states;
 };
@@ -86,56 +83,57 @@ export default findStatesByPresentation;
 
 
 /**
+ * @private
  * @param {Number} size
- * @param {{i: Number, j: Number}} id
+ * @param {CID} id
  * @param {boolean} value
  * @param {BinaryMatrixOverlay} overlay
- * @private
+ * @return Assumptions|null
  */
 let _makeAssumptions = function(size, id, value, overlay) {
     let cellIndexes = [id];
     if (id.i > 0)
-        cellIndexes.append(cellId(id.i - 1, id.j));
+        cellIndexes.push(CellId(id.i - 1, id.j));
     if (id.i < size - 1)
-        cellIndexes.append(cellId(id.i + 1, id.j));
+        cellIndexes.push(CellId(id.i + 1, id.j));
     if (id.j > 0)
-        cellIndexes.append(cellId(id.i, id.j + 1));
+        cellIndexes.push(CellId(id.i, id.j - 1));
     if (id.j < size - 1)
-        cellIndexes.append(cellId(id.i, id.j + 1));
+        cellIndexes.push(CellId(id.i, id.j + 1));
 
-    let nonEmptyCellIndexes = new Set(
-        cellIndexes
-            .map(overlay.get)
-            .filter(function (value) {
-                if (value === undefined) throw 'wtf?!';
-                return value !== null;
-            })
-    );
+    /** @type Array<CID> */
+    let nonEmptyCells = [...cellIndexes].filter(cid => overlay.has(cid));
 
-    let nonEmptySum = [...nonEmptyCellIndexes].reduce((acc, val) => (acc !== overlay.get(val)), false);
-    let emptyCellIndexes = new Set([...cellIndexes].filter(val => !nonEmptyCellIndexes.has(val)))
+    /** @type boolean */
+    let nonEmptyCellsSum = nonEmptyCells.reduce((acc, cid) => (acc !== overlay.get(cid)), false);
 
-    if (emptyCellIndexes.length === 0 && nonEmptySum !== value) {
-        throw 'AssumptionError';
+    if (nonEmptyCells.length === cellIndexes.length) {
+        if (value === nonEmptyCellsSum) {
+            return [new Map()];
+        } else {
+            return null;
+        }
     }
 
+    /** @type Array<CID> */
+    let emptyCells = [...cellIndexes].filter(cid => !overlay.has(cid));
+
+    /** @type Assumptions */
     let assumptions = [];
 
-    // FIXME: selfproduct(...) is a subject for optimization :)
-    for (let values of selfproduct([true, false], emptyCellIndexes.length)) {
-        let emptyCells = new Map([...zip(emptyCellIndexes, values)]);
-        let totalSum = [...emptyCells.keys()].reduce((acc, val) => emptyCells[val], false);
+    for (let values of iterBoolArrays(emptyCells.length)) {
+        let totalSum = values.reduce((acc, val) => (acc !== val), nonEmptyCellsSum);
         if (totalSum === value) {
-            assumptions.push(emptyCells);
+            let assumption = new Map(zip(emptyCells, values));
+            assumptions.push(assumption);
         }
     }
 
     if (assumptions.length === 0) {
-        throw 'AssumptionError';
+        return null;
     }
 
     return assumptions;
-
 };
 
 
@@ -150,24 +148,41 @@ let _Indexer = function (size) {
 
 /**
  * @param {Number} pos
- * @return {{i: Number, j:Number}}
+ * @return {CID}
  */
 _Indexer.prototype.get = function(pos) {
-    return cellId(
+    return CellId(
         Math.floor(pos / this.size),
         pos % this.size,
     );
 };
 
 
-const f = (a, b) => [].concat(...a.map(d => b.map(e => [].concat(d, e))));
-const cartesian = (a, b, ...c) => (b ? cartesian(f(a, b), ...c) : a);
-const selfproduct = function (arr, repeats) {
-    let arrays = [];
-    for (let i = 0; i < repeats; i++) arrays.push(arr);
-    return cartesian(...arrays)
+/**
+ * Generate all combinations of boolean arrays with given length
+ *
+ * @param {Number} length
+ * @return {IterableIterator<Array<boolean>>}
+ */
+const iterBoolArrays = function* (length) {
+    let maxNum = 2**length;
+    for (let num = 0; num < maxNum; num++) {
+        let arr = [];
+        for (let idx = 0; idx < length; idx++) {
+            arr.push((num & (1 << idx)) > 0);
+        }
+        yield arr;
+    }
 };
 
+
+/**
+ * Same as zip() in Python
+ *
+ * @param arr
+ * @param arrays
+ * @return {IterableIterator<Array>}
+ */
 const zip = function* (arr, ...arrays) {
     let idxLim = arrays
         .map(a => a.length)
@@ -175,4 +190,23 @@ const zip = function* (arr, ...arrays) {
     for (let idx = 0; idx < idxLim; idx++) {
         yield [arr[idx], ...(arrays.map(a => a[idx]))];
     }
+};
+
+
+/**
+ * Split by predicate.
+ *
+ * @param {Iterable} iterable
+ * @param {function} predicate
+ */
+const split = function (iterable, predicate) {
+    let result = { true: [], false: []};
+    for (let value of iterable) {
+        if (predicate(value)) {
+            result.true.push(value);
+        } else {
+            result.false.push(value);
+        }
+    }
+    return [];
 };

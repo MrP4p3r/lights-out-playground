@@ -5,11 +5,10 @@
 
 'use strict';
 
-
-import Presentation from './presentation';
-import State from './state';
-import Solution from './solution';
-import findStatesByPresentation from './solver';
+import Presentation from './presentation.js';
+import State from './state.js';
+import Solution from './solution.js';
+import findStatesByPresentation from './solver.js';
 
 /**
  * @param {Number} fieldSize
@@ -53,9 +52,9 @@ let findSolution = function (request) {
         return new Solution(state.size, state.items);
     });
 
-    let solution = _chooseEfficientSolution(possibleStates);
+    let solution = _chooseEfficientSolution(possibleSolutions);
 
-    return new FindSolutionResponse(size, diffMatrix);
+    return new FindSolutionResponse(size, solution.items);
 };
 
 export {findSolution, FindSolutionRequest, FindSolutionResponse};

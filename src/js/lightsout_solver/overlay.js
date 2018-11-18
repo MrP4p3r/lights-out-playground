@@ -1,5 +1,8 @@
 'use strict';
 
+import State from './state.js';
+import CellId from './cell_id.js';
+
 /**
  * Helper for solution finding algorithm.
  * 
@@ -83,11 +86,36 @@ BinaryMatrixOverlay.prototype.set = function (id, value) {
 
 
 /**
+ * @param {{i: Number, j: Number}} id
+ * @return {boolean}
+ */
+BinaryMatrixOverlay.prototype.has = function (id) {
+    let layer = this._filledCellsStack[this._filledCellsStack.length - 1];
+    return (layer === undefined ? false : layer.has(id));
+};
+
+
+/**
  * @return {boolean}
  */
 BinaryMatrixOverlay.prototype.hasAllValues = function () {
     return (
         this._filledCellsStack.length
-        && this._filledCellsStack[this._filledCellsStack.length - 1].length === (this.size * this.size)
+        && this._filledCellsStack[this._filledCellsStack.length - 1].size === (this.size * this.size)
     );
+};
+
+
+/**
+ * @return {State}
+ */
+BinaryMatrixOverlay.prototype.toState = function () {
+    let items = [];
+    for (let i = 0; i < this.size; i++) {
+        items.push([]);
+        for (let j = 0; j < this.size; j++) {
+            items[i].push(this.get(CellId(i, j)));
+        }
+    }
+    return new State(this.size, items);
 };
