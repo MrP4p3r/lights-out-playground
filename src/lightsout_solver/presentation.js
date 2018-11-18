@@ -2,6 +2,13 @@
 
 import BinaryMatrix from './binary_matrix';
 
+/**
+ * Presentations class.
+ * Represents what player sees on the game field
+ *
+ * @extends BinaryMatrix
+ * @constructor
+ */
 let Presentation = function (...args) {
     BinaryMatrix.call(this, ...args);
 };

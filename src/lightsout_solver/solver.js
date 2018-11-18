@@ -1,10 +1,11 @@
-'use strict';
-
-/**
+/*!
  * State solver module.
  *
  * Use findStatesByPresentation(...) to find all states leading to a given presentation;
  */
+
+'use strict';
+
 
 import BinaryMatrixOverlay from './overlay';
 import cellId from './cell_id';

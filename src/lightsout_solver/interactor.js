@@ -1,9 +1,10 @@
-'use strict';
-
-/**
+/*!
  * Main API of this package.
  * Use findSolution(...) to find efficient solution for Lights Out game.
  */
+
+'use strict';
+
 
 import Presentation from './presentation';
 import State from './state';

@@ -1,6 +1,8 @@
 'use strict';
 
 /**
+ * Helper for solution finding algorithm.
+ * 
  * @param {Number} size
  * @constructor
  */

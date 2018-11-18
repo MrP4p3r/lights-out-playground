@@ -1,12 +1,12 @@
 'use strict';
 
+import BinaryMatrix from './binary_matrix';
+
+
 /**
  * State class.
  * Represents internal state of game field cells.
  */
-
-import BinaryMatrix from './binary_matrix';
-
 let State = function (...args) {
     BinaryMatrix.call(this, ...args);
 };
@@ -15,6 +15,11 @@ export default State;
 
 State.prototype = Object.create(BinaryMatrix.prototype);
 
+/**
+ * @param i
+ * @param j
+ * @return {boolean}
+ */
 State.prototype.getSum = function (i, j) {
     let m = this.items;
     let size = this.size;

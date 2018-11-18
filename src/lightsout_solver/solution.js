@@ -1,12 +1,14 @@
 'use strict';
 
+import BinaryMatrix from './binary_matrix';
+
 /**
  * Solution class.
  * Represents game field changes to achieve another specific state.
+ *
+ * @extends BinaryMatrix
+ * @constructor
  */
-
-import BinaryMatrix from './binary_matrix';
-
 let Solution = function (...args) {
     BinaryMatrix.call(this, ...args);
 };
