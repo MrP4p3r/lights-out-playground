@@ -15,6 +15,7 @@ let state = new Reef(null, {
         size: 0,
         items: [],
         tips: [],
+        solverSucceed: true,
     },
 });
 
@@ -31,6 +32,7 @@ let root = new Reef('#app_root', {
         let html = '';
         html += renderControls();
         html += renderGameField(size, rows, tips);
+        html += renderNote(props.solverSucceed);
         return html;
     },
     attachTo: [state],
@@ -47,6 +49,18 @@ let renderControls = function () {
     html += '<button id="button-inc-size">size++</button>';
     html += '</div>';
     return html
+};
+
+/**
+ * Note renderer.
+ * @param {boolean} solverSucceed
+ */
+let renderNote = function (solverSucceed) {
+    let html = '';
+    if (!solverSucceed) {
+        html += '<div class="note"><p>It seems this field presentation is not valid.</p></div>'
+    }
+    return html;
 };
 
 /**
@@ -97,7 +111,11 @@ document.addEventListener('click', function (event) {
         let data = state.getData();
         let request = new LightsOutSolver.FindSolutionRequest(data.size, data.items);
         let response = LightsOutSolver.findSolution(request);
-        state.setData({tips: response.diffMatrix})
+        let update = {solverSucceed: response.success};
+        if (response.success) {
+            update.tips = response.diffMatrix;
+        }
+        state.setData(update)
     } else if (elem.id === 'button-inc-size' || elem.id === 'button-dec-size') {
         let sizeDelta = (elem.id === 'button-inc-size' ? 1 : -1);
         let data = state.getData();

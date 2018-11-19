@@ -23,14 +23,19 @@ let FindSolutionRequest = function (fieldSize, presentationMatrix) {
 };
 
 /**
+ * @desc Cells player have to toggle
  * @param {Number} fieldSize
  * @desc Game field side length
- * @param {boolean[][]} diffMatrix
- * @desc Cells player have to toggle
+ * @param {boolean} success
+ * @param {Number} [fieldSize]
+ * @param {boolean[][]} [diffMatrix]
  * @constructor
  */
-let FindSolutionResponse = function (fieldSize, diffMatrix) {
-    /** @type Number*/
+let FindSolutionResponse = function (success, fieldSize, diffMatrix) {
+    /** @type boolean */
+    this.success = success;
+
+    /** @type Number */
     this.fieldSize = fieldSize;
 
     /** @type boolean[][] */
@@ -52,9 +57,12 @@ let findSolution = function (request) {
         return new Solution(state.size, state.items);
     });
 
-    let solution = _chooseEfficientSolution(possibleSolutions);
+    if (possibleSolutions.length === 0) {
+        return new FindSolutionResponse(false);
+    }
 
-    return new FindSolutionResponse(size, solution.items);
+    let solution = _chooseEfficientSolution(possibleSolutions);
+    return new FindSolutionResponse(true, size, solution.items);
 };
 
 export {findSolution, FindSolutionRequest, FindSolutionResponse};

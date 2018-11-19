@@ -35,3 +35,11 @@
 .cell[data-cell-activated="true"] {
     background: cornflowerblue;
 }
+
+.note {
+    color: white;
+    background: darkred;
+    padding: 1px;
+    text-align: center;
+    font-size: 18pt;
+}
