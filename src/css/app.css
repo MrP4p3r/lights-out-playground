@@ -1,3 +1,9 @@
+/* app.css */
+
+#field-controls {
+    text-align: center;
+}
+
 .game-field {
     display: flex;
     flex-direction: column;

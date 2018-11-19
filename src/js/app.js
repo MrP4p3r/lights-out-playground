@@ -12,17 +12,9 @@ import * as LightsOutSolver from './lightsout_solver/index.js';
 let state = new Reef(null, {
     lagoon: true,
     data: {
-        size: 3,
-        items: [
-            [false, false, true],
-            [false, true, true],
-            [true, true, true],
-        ],
-        tips: [
-            [false, false, false],
-            [false, false, false],
-            [false, false, false],
-        ]
+        size: 0,
+        items: [],
+        tips: [],
     },
 });
 
@@ -37,12 +29,25 @@ let root = new Reef('#app_root', {
         let tips = props.tips;
 
         let html = '';
+        html += renderControls();
         html += renderGameField(size, rows, tips);
-        html += '<button id="solve-button">Solve!</button>';
         return html;
     },
     attachTo: [state],
 });
+
+/**
+ * Controls renderer.
+ */
+let renderControls = function () {
+    let html = '';
+    html += '<div id="field-controls">';
+    html += '<button id="button-solve">Solve!</button>';
+    html += '<button id="button-dec-size">size--</button>';
+    html += '<button id="button-inc-size">size++</button>';
+    html += '</div>';
+    return html
+};
 
 /**
  * Game field renderer.
@@ -88,12 +93,56 @@ document.addEventListener('click', function (event) {
         let data = state.getData();
         data.items[i][j] = !data.items[i][j];
         state.setData({items: data.items});
-    } else if (elem.id === 'solve-button') {
+    } else if (elem.id === 'button-solve') {
         let data = state.getData();
         let request = new LightsOutSolver.FindSolutionRequest(data.size, data.items);
         let response = LightsOutSolver.findSolution(request);
         state.setData({tips: response.diffMatrix})
+    } else if (elem.id === 'button-inc-size' || elem.id === 'button-dec-size') {
+        let sizeDelta = (elem.id === 'button-inc-size' ? 1 : -1);
+        let data = state.getData();
+        let newSize = data.size + sizeDelta;
+        if (newSize < 2 || newSize > 12) {
+            // This hardcode does not allow too big and too small fields
+            return;
+        }
+        data.size = newSize;
+        data.items = makeRandomItems(newSize);
+        data.tips = makeTipsArray(newSize);
+        state.setData(data);
     }
 });
 
-root.render();
+
+let makeRandomItems = function (size) {
+    let items = [];
+    for (let i = 0; i < size; i++) {
+        items.push([]);
+        for (let j = 0; j < size; j++) {
+            items[i].push(Math.random() < 0.1337);
+        }
+    }
+    return items;
+};
+
+
+let makeTipsArray = function (size) {
+    let tips = [];
+    for (let i = 0; i < size; i++) {
+        tips.push([]);
+        for (let j = 0; j < size; j++) {
+            tips[i].push(false);
+        }
+    }
+    return tips;
+};
+
+
+(function () {
+    let data = state.getData();
+    let size = 3;
+    data.size = size;
+    data.items = makeRandomItems(size);
+    data.tips = makeTipsArray(size);
+    state.setData(data);
+})();
