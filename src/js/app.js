@@ -4,7 +4,7 @@
  * GUI application code
  */
 
-import * as LightsOutSolver from './lightsout_solver';
+import * as LightsOutSolver from './lightsout_solver/index.js';
 
 /**
  * Application state;
