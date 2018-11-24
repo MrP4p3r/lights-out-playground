@@ -1,5 +1,9 @@
 /* app.css */
 
+body {
+    background: #434d4b;
+}
+
 #field-controls {
     text-align: center;
     margin: 30px
