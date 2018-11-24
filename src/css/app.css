@@ -1,17 +1,78 @@
 /* app.css */
 
-body {
-    background: #434d4b;
+@import url('https://fonts.googleapis.com/css?family=Lobster');
+@import url('https://fonts.googleapis.com/css?family=Oswald');
+
+:root {
+    /* Color scheme */
+    --col-bg: #101515;
+    --col-bg-light: #273536;
+    --col-button-bg: #273536;
+    --col-text: #BAFFBA;
+    --col-alert: #8E0A1F;
+
+
+    --col-black: #0A1006;
+    --col-darkgray: #0f1919;
+    --col-gray: #132225;
+    --col-lightgray: #273536;
+    --col-blue: #082231;
+    --col-lightblue: #5EEBE3;
+    --col-yellow: #F5D522;
+    --col-red: #8E0A1F;
 }
+
+* {
+    /* Minimal reset */
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background: var(--col-bg);
+    font-family: 'Oswald', sans-serif;
+}
+
+header {
+    width: 100%;
+    height: 64px;
+    text-align: center;
+}
+
+header > .title {
+    font-family: 'Lobster', cursive;
+    color: var(--col-bg-light);
+    text-shadow: 2px 2px 8px var(--col-yellow), -2px -2px 8px var(--col-lightblue);
+    font-size: 24pt;
+    padding-top: 16px;
+}
+
 
 #field-controls {
     text-align: center;
-    margin: 30px
+    margin: 30px;
+    font-size: 12pt;
 }
 
-#field-controls > button {
-    margin: 4px;
-    padding: 4px 16px;
+.button {
+    --accent-color: var(--col-lightblue);
+
+    cursor: pointer;
+    user-select: none;
+
+    margin: 8px;
+    padding: 8px 32px;
+    background: var(--col-button-bg);
+    color: var(--accent-color);
+    text-shadow: 0 0 2px var(--accent-color);
+}
+
+.button.main {
+    --accent-color: var(--col-yellow);
+}
+
+.button.active {
+    box-shadow: 0 0 4px 2px var(--accent-color);
 }
 
 .game-field {
@@ -29,27 +90,31 @@ body {
 .cell-wrapper {
     margin: 8px;
     padding: 8px;
-    background: #313a43;
+    background: var(--col-lightgray);
 }
 
 .cell-wrapper[data-cell-highlight="true"] {
-    box-shadow: 0px 0px 4px 2px #edc648b0;
+    box-shadow: 0 0 4px 1px var(--col-yellow);
 }
 
 .cell {
-    height: 40px;
-    width: 40px;
-    background: #313a43;
+    cursor: pointer;
+    height: 32px;
+    width: 32px;
+    background: var(--col-gray);
 }
 
 .cell[data-cell-activated="true"] {
-    background: #7fdbdf;
+    background: var(--col-lightblue);
+    box-shadow: 0 0 8px 0 var(--col-lightblue);
 }
 
 .note {
-    color: #FAEFCD;
-    background: #99052A;
-    padding: 1px;
+    color: var(--col-text);
+    background: var(--col-alert);
+    box-sizing: border-box;
+    padding: 8px 0 0 0;
+    height: 56px;
     text-align: center;
     font-size: 18pt;
     margin: 30px 120px;

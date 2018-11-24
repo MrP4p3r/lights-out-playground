@@ -30,6 +30,7 @@ let root = new Reef('#app_root', {
         let tips = props.tips;
 
         let html = '';
+        html += renderHeader();
         html += renderControls();
         html += renderGameField(size, rows, tips);
         html += renderNote(props.solverSucceed);
@@ -39,14 +40,21 @@ let root = new Reef('#app_root', {
 });
 
 /**
+ * Header renderer;
+ */
+let renderHeader = function() {
+    return '<header><div class="title"><span>Lights Out Playground</span></div></header>';
+};
+
+/**
  * Controls renderer.
  */
 let renderControls = function () {
     let html = '';
     html += '<div id="field-controls">';
-    html += '<button id="button-solve">Solve!</button>';
-    html += '<button id="button-dec-size">size--</button>';
-    html += '<button id="button-inc-size">size++</button>';
+    html += '<a id="button-solve" class="button">Solve!</a>';
+    html += '<a id="button-dec-size" class="button">size--</a>';
+    html += '<a id="button-inc-size" class="button">size++</a>';
     html += '</div>';
     return html
 };
