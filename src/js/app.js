@@ -107,27 +107,30 @@ let renderGameField = (function () {
     return renderer.render.bind(renderer);
 })();
 
-document.addEventListener('click', function (event) {
-    let elem = event.target;
-    if (elem.classList.contains('cell')) {
-        let i = Number.parseInt(elem.getAttribute('data-cell-i'));
-        let j = Number.parseInt(elem.getAttribute('data-cell-j'));
+
+let controller = {
+
+    initialize: function () {
         let data = state.getData();
-        data.items[i][j] = !data.items[i][j];
-        state.setData({items: data.items});
-    } else if (elem.id === 'button-solve') {
+        let size = 3;
+        data.size = size;
+        data.items = makeRandomItems(size);
+        data.tips = makeTipsArray(size);
+        state.setData(data);
+    },
+
+    /**
+     * @return {Number}
+     */
+    getFieldSize: function () {
+        return state.getData().size;
+    },
+
+    /**
+     * @param {Number} newSize
+     */
+    setFieldSize: function (newSize) {
         let data = state.getData();
-        let request = new LightsOutSolver.FindSolutionRequest(data.size, data.items);
-        let response = LightsOutSolver.findSolution(request);
-        let update = {solverSucceed: response.success};
-        if (response.success) {
-            update.tips = response.diffMatrix;
-        }
-        state.setData(update)
-    } else if (elem.id === 'button-inc-size' || elem.id === 'button-dec-size') {
-        let sizeDelta = (elem.id === 'button-inc-size' ? 1 : -1);
-        let data = state.getData();
-        let newSize = data.size + sizeDelta;
         if (newSize < 2 || newSize > 12) {
             // This hardcode does not allow too big and too small fields
             return;
@@ -136,6 +139,43 @@ document.addEventListener('click', function (event) {
         data.items = makeRandomItems(newSize);
         data.tips = makeTipsArray(newSize);
         state.setData(data);
+    },
+
+    solve: function () {
+        let data = state.getData();
+        let request = new LightsOutSolver.FindSolutionRequest(data.size, data.items);
+        let response = LightsOutSolver.findSolution(request);
+        let update = {solverSucceed: response.success};
+        if (response.success) {
+            update.tips = response.diffMatrix;
+        }
+        state.setData(update)
+    },
+
+    /**
+     * @param {Number} i
+     * @param {Number} j
+     */
+    clickCell: function (i, j) {
+        let data = state.getData();
+        data.items[i][j] = !data.items[i][j];
+        state.setData({items: data.items});
+    },
+
+};
+
+document.addEventListener('click', function (event) {
+    let elem = event.target;
+    if (elem.classList.contains('cell')) {
+        let i = Number.parseInt(elem.getAttribute('data-cell-i'));
+        let j = Number.parseInt(elem.getAttribute('data-cell-j'));
+        controller.clickCell(i, j);
+    } else if (elem.id === 'button-solve') {
+        controller.solve();
+    } else if (elem.id === 'button-inc-size' || elem.id === 'button-dec-size') {
+        let sizeDelta = (elem.id === 'button-inc-size' ? 1 : -1);
+        let newSize = controller.getFieldSize() + sizeDelta;
+        controller.setFieldSize(newSize);
     }
 });
 
@@ -163,12 +203,4 @@ let makeTipsArray = function (size) {
     return tips;
 };
 
-
-(function () {
-    let data = state.getData();
-    let size = 3;
-    data.size = size;
-    data.items = makeRandomItems(size);
-    data.tips = makeTipsArray(size);
-    state.setData(data);
-})();
+controller.initialize();
