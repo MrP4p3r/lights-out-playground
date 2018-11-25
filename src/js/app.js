@@ -15,7 +15,8 @@ let state = new Reef(null, {
         size: 0,
         items: [],
         tips: [],
-        solverSucceed: true,
+        showSolution: false,
+        solverSucceed: null,
         playMode: false,
     },
 });
@@ -33,7 +34,7 @@ let root = new Reef('#app_root', {
         let html = '';
         html += renderHeader();
         html += renderControls(props.playMode);
-        html += renderGameField(size, rows, tips);
+        html += renderGameField(size, rows, tips, props.showSolution);
         html += renderNote(props.solverSucceed);
         return html;
     },
@@ -69,7 +70,7 @@ let renderControls = function (playModeEnabled) {
  */
 let renderNote = function (solverSucceed) {
     let html = '';
-    if (!solverSucceed) {
+    if (solverSucceed === false) {
         html += '<div class="note"><p>It seems this field presentation is not valid.</p></div>'
     }
     return html;
@@ -80,25 +81,25 @@ let renderNote = function (solverSucceed) {
  */
 let renderGameField = (function () {
     let renderer = {
-        render: function (size, rows, tipRows) {
+        render: function (size, rows, tipRows, highlight) {
             let html = '<div class="game-field">';
             for (let i = 0; i < size; i++) {
-                html += this._renderRow(size, i, rows[i], tipRows[i]);
+                html += this._renderRow(size, i, rows[i], tipRows[i], highlight);
             }
             html += '</div>';
             return html
         },
-        _renderRow: function (size, i, values, tips) {
+        _renderRow: function (size, i, values, tips, highlight) {
             let html = '<div class="cells-row">';
             for (let j = 0; j < size; j++) {
-                html += this._renderCell(i, j, values[j], tips[j]);
+                html += this._renderCell(i, j, values[j], tips[j], highlight);
             }
             html += '</div>';
             return html
         },
-        _renderCell: function (i, j, value, tip) {
+        _renderCell: function (i, j, value, tipValue, highlight) {
             let html = '';
-            html += `<div class="cell-wrapper" data-cell-highlight="${tip}"> `;
+            html += `<div class="cell-wrapper" data-cell-highlight="${highlight ? tipValue : false}"> `;
             html += '<div ';
             html += 'class="cell" ';
             html += `data-cell-activated=${value} `;
@@ -129,7 +130,7 @@ let controller = {
                 tips[i].push(false);
             }
         }
-        return {size: size, items: items, tips: tips};
+        return {size: size, items: items, tips: tips, solverSucceed: null};
     },
 
     /**
@@ -152,13 +153,20 @@ let controller = {
 
     solve: function () {
         let data = state.getData();
-        let request = new LightsOutSolver.FindSolutionRequest(data.size, data.items);
-        let response = LightsOutSolver.findSolution(request);
-        let update = {solverSucceed: response.success};
-        if (response.success) {
-            update.tips = response.diffMatrix;
+
+        if (data.showSolution) {
+            data.showSolution = false;
+            state.setData(data);
+        } else {
+            let request = new LightsOutSolver.FindSolutionRequest(data.size, data.items);
+            let response = LightsOutSolver.findSolution(request);
+            let update = {solverSucceed: response.success};
+            if (response.success) {
+                update.tips = response.diffMatrix;
+                update.showSolution = true;
+            }
+            state.setData(update)
         }
-        state.setData(update)
     },
 
     /**
@@ -170,12 +178,16 @@ let controller = {
         if (!data.playMode) {
             /* Edit mode */
             data.items[i][j] = !data.items[i][j];
-            state.setData({items: data.items});
+            state.setData({items: data.items, showSolution: false});
         } else {
             /* Play mode */
             let request = new LightsOutSolver.SwitchCellRequest(data.size, data.items, i, j);
             let response = LightsOutSolver.switchCell(request);
-            state.setData({items: response.newPresentationMatrix})
+            data.items = response.newPresentationMatrix;
+            if (data.solverSucceed) {
+                data.tips[i][j] = data.tips[i][j] !== true;
+            }
+            state.setData(data);
         }
     },
 
