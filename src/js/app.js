@@ -113,12 +113,19 @@ let renderGameField = (function () {
 let controller = {
 
     initialize: function () {
-        let data = state.getData();
-        let size = 3;
-        data.size = size;
-        data.items = makeRandomItems(size);
-        data.tips = makeTipsArray(size);
-        state.setData(data);
+        state.setData(this._makeNewField(3));
+    },
+
+    _makeNewField: function (size) {
+        let items = LightsOutSolver.generate(new LightsOutSolver.GenerateRequest(size, false)).presentationMatrix;
+        let tips = [];
+        for (let i = 0; i < size; i++) {
+            tips.push([]);
+            for (let j = 0; j < size; j++) {
+                tips[i].push(false);
+            }
+        }
+        return {size: size, items: items, tips: tips};
     },
 
     /**
@@ -132,15 +139,11 @@ let controller = {
      * @param {Number} newSize
      */
     setFieldSize: function (newSize) {
-        let data = state.getData();
         if (newSize < 2 || newSize > 12) {
             // This hardcode does not allow too big and too small fields
             return;
         }
-        data.size = newSize;
-        data.items = makeRandomItems(newSize);
-        data.tips = makeTipsArray(newSize);
-        state.setData(data);
+        state.setData(this._makeNewField(newSize));
     },
 
     solve: function () {
@@ -206,29 +209,5 @@ document.addEventListener('click', function (event) {
         controller.setPlayMode(!controller.getPlayMode());
     }
 });
-
-
-let makeRandomItems = function (size) {
-    let items = [];
-    for (let i = 0; i < size; i++) {
-        items.push([]);
-        for (let j = 0; j < size; j++) {
-            items[i].push(Math.random() < 0.1337);
-        }
-    }
-    return items;
-};
-
-
-let makeTipsArray = function (size) {
-    let tips = [];
-    for (let i = 0; i < size; i++) {
-        tips.push([]);
-        for (let j = 0; j < size; j++) {
-            tips[i].push(false);
-        }
-    }
-    return tips;
-};
 
 controller.initialize();

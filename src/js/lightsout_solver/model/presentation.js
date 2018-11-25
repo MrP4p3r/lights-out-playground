@@ -1,6 +1,7 @@
 'use strict';
 
 import BinaryMatrix from './binary_matrix.js';
+import State from "./state.js";
 
 /**
  * Presentations class.
@@ -52,4 +53,20 @@ Presentation.prototype.toggle = function (i, j) {
     if (i < size - 1) m[i+1][j] = !m[i+1][j];
     if (j > 0) m[i][j-1] = !m[i][j-1];
     if (j < size - 1) m[i][j+1] = !m[i][j+1];
+};
+
+/**
+ * @param size
+ * @param {function} valueFactory
+ * @constructor
+ */
+Presentation.MakeNew = function (size, valueFactory) {
+    let items = [];
+    for (let i = 0; i < size; i++) {
+        items.push([]);
+        for (let j = 0; j < size; j++) {
+            items[i].push(valueFactory(i, j));
+        }
+    }
+    return new Presentation(size, items);
 };

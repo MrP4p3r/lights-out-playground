@@ -31,5 +31,21 @@ State.prototype.getSum = function (i, j) {
     if (j > 0) result ^= m[i][j-1];
     if (j < (size - 1)) result ^= m[i][j+1];
 
-    return result;
+    return Boolean(result);
+};
+
+/**
+ * @param size
+ * @param {function} valueFactory
+ * @constructor
+ */
+State.MakeNew = function (size, valueFactory) {
+    let items = [];
+    for (let i = 0; i < size; i++) {
+        items.push([]);
+        for (let j = 0; j < size; j++) {
+            items[i].push(valueFactory(i, j));
+        }
+    }
+    return new State(size, items);
 };
