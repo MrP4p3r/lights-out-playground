@@ -130,7 +130,14 @@ let controller = {
                 tips[i].push(false);
             }
         }
-        return {size: size, items: items, tips: tips, solverSucceed: null};
+        
+        return {
+            size: size,
+            items: items,
+            tips: tips,
+            solverSucceed: null,
+            showSolution: false,
+        };
     },
 
     /**
