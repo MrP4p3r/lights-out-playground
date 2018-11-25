@@ -53,10 +53,10 @@ let renderHeader = function() {
 let renderControls = function (playModeEnabled) {
     let html = '';
     html += '<div id="field-controls">';
-    html += '<a id="button-solve" class="button">Solve!</a>';
+    html += '<a id="button-solve" class="button main">Solve!</a>';
     html += `<a id="button-play-mode" class="button ${playModeEnabled ? 'active' : ''}">Play</a>`;
-    html += '<a id="button-dec-size" class="button">size--</a>';
-    html += '<a id="button-inc-size" class="button">size++</a>';
+    html += '<a id="button-dec-size" class="button">Size--</a>';
+    html += '<a id="button-inc-size" class="button">Size++</a>';
     html += '</div>';
     return html
 };
