@@ -9,11 +9,11 @@ import State from "../model/state.js";
 
 /**
  * @param {Number} fieldSize
- * @param {boolean} empty
+ * @param {boolean|null} fillDirective
  */
-let GenerateRequest = function (fieldSize, empty) {
+let GenerateRequest = function (fieldSize, fillDirective) {
     this.fieldSize = fieldSize;
-    this.empty = empty;
+    this.fillDirective = fillDirective;
 };
 
 /**
@@ -28,9 +28,22 @@ let GenerateResponse = function (presentationMatrix) {
  * @return GenerateResponse
  */
 let generate = function (request) {
-    let valueFactory = request.empty ? () => false : (() => (Math.random() < 0.5));
-    let state = new State.MakeNew(request.fieldSize, valueFactory);
-    let presentation = new Presentation.MakeNew(request.fieldSize, (i, j) => state.getSum(i, j));
+    let presentation;
+    let size = request.fieldSize;
+
+    switch (request.fillDirective) {
+        case null:
+            let state = State.MakeNew(size, () => (Math.random() < 0.5));
+            presentation = new Presentation.MakeNew(request.fieldSize, (i, j) => state.getSum(i, j));
+            break;
+        case true:
+        case false:
+            presentation = new Presentation.MakeNew(request.fieldSize, () => request.fillDirective);
+            break;
+        default:
+            throw `Unknown fillDirective ${request.fillDirective}`;
+    }
+
     return new GenerateResponse(presentation.items);
 };
 

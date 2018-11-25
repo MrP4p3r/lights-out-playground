@@ -55,6 +55,8 @@ let renderControls = function (playModeEnabled) {
     html += '<div id="field-controls">';
     html += '<a id="button-solve" class="button main">Solve!</a>';
     html += `<a id="button-play-mode" class="button ${playModeEnabled ? 'active' : ''}">Play</a>`;
+    html += '<a id="button-randomize" class="button">Randomize</a>';
+    html += '<a id="button-clean" class="button">Clean</a>';
     html += '<a id="button-dec-size" class="button">Size--</a>';
     html += '<a id="button-inc-size" class="button">Size++</a>';
     html += '</div>';
@@ -113,11 +115,13 @@ let renderGameField = (function () {
 let controller = {
 
     initialize: function () {
-        state.setData(this._makeNewField(3));
+        state.setData(this._makeNewField(3, null));
     },
 
-    _makeNewField: function (size) {
-        let items = LightsOutSolver.generate(new LightsOutSolver.GenerateRequest(size, false)).presentationMatrix;
+    _makeNewField: function (size, fillDirective) {
+        let request = new LightsOutSolver.GenerateRequest(size, fillDirective);
+        let items = LightsOutSolver.generate(request).presentationMatrix;
+
         let tips = [];
         for (let i = 0; i < size; i++) {
             tips.push([]);
@@ -143,7 +147,7 @@ let controller = {
             // This hardcode does not allow too big and too small fields
             return;
         }
-        state.setData(this._makeNewField(newSize));
+        state.setData(this._makeNewField(newSize, null));
     },
 
     solve: function () {
@@ -189,7 +193,23 @@ let controller = {
         let data = state.getData();
         data.playMode = enabled;
         state.setData(data);
-    }
+    },
+
+    randomizeField: function () {
+        state.setData(this._makeNewField(state.getData().size, null));
+    },
+
+    cleanField: function () {
+        let data = state.getData();
+        let sum = data.items.reduce((a, v) => (a + v.reduce((a, v) => (a + v), false)), false);
+
+        let fillDirective;
+        if (sum === 0) fillDirective = true;
+        else if (sum === (data.size * data.size)) fillDirective = false;
+        else fillDirective = false;
+
+        state.setData(this._makeNewField(data.size, fillDirective));
+    },
 
 };
 
@@ -207,6 +227,10 @@ document.addEventListener('click', function (event) {
         controller.setFieldSize(newSize);
     } else if (elem.id === 'button-play-mode') {
         controller.setPlayMode(!controller.getPlayMode());
+    } else if (elem.id === 'button-randomize') {
+        controller.randomizeField();
+    } else if (elem.id === 'button-clean') {
+        controller.cleanField();
     }
 });
 
