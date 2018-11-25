@@ -44,3 +44,12 @@ Presentation.prototype.inverse = function () {
     return new Presentation(this.size, newItems);
 };
 
+Presentation.prototype.toggle = function (i, j) {
+    let m = this.items;
+    let size = this.size;
+    m[i][j] = m[i][j] !== true;
+    if (i > 0) m[i-1][j] = !m[i-1][j];
+    if (i < size - 1) m[i+1][j] = !m[i+1][j];
+    if (j > 0) m[i][j-1] = !m[i][j-1];
+    if (j < size - 1) m[i][j+1] = !m[i][j+1];
+};

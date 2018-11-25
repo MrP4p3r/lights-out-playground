@@ -16,6 +16,7 @@ let state = new Reef(null, {
         items: [],
         tips: [],
         solverSucceed: true,
+        playMode: false,
     },
 });
 
@@ -31,7 +32,7 @@ let root = new Reef('#app_root', {
 
         let html = '';
         html += renderHeader();
-        html += renderControls();
+        html += renderControls(props.playMode);
         html += renderGameField(size, rows, tips);
         html += renderNote(props.solverSucceed);
         return html;
@@ -49,10 +50,11 @@ let renderHeader = function() {
 /**
  * Controls renderer.
  */
-let renderControls = function () {
+let renderControls = function (playModeEnabled) {
     let html = '';
     html += '<div id="field-controls">';
     html += '<a id="button-solve" class="button">Solve!</a>';
+    html += `<a id="button-play-mode" class="button ${playModeEnabled ? 'active' : ''}">Play</a>`;
     html += '<a id="button-dec-size" class="button">size--</a>';
     html += '<a id="button-inc-size" class="button">size++</a>';
     html += '</div>';
@@ -158,9 +160,33 @@ let controller = {
      */
     clickCell: function (i, j) {
         let data = state.getData();
-        data.items[i][j] = !data.items[i][j];
-        state.setData({items: data.items});
+        if (!data.playMode) {
+            /* Edit mode */
+            data.items[i][j] = !data.items[i][j];
+            state.setData({items: data.items});
+        } else {
+            /* Play mode */
+            let request = new LightsOutSolver.SwitchCellRequest(data.size, data.items, i, j);
+            let response = LightsOutSolver.switchCell(request);
+            state.setData({items: response.newPresentationMatrix})
+        }
     },
+
+    /**
+     * @return {boolean}
+     */
+    getPlayMode: function () {
+        return state.getData().playMode;
+    },
+
+    /**
+     * @param {boolean} enabled
+     */
+    setPlayMode: function (enabled) {
+        let data = state.getData();
+        data.playMode = enabled;
+        state.setData(data);
+    }
 
 };
 
@@ -176,6 +202,8 @@ document.addEventListener('click', function (event) {
         let sizeDelta = (elem.id === 'button-inc-size' ? 1 : -1);
         let newSize = controller.getFieldSize() + sizeDelta;
         controller.setFieldSize(newSize);
+    } else if (elem.id === 'button-play-mode') {
+        controller.setPlayMode(!controller.getPlayMode());
     }
 });
 
