@@ -1,1 +1,1 @@
-export * from './interactor.js';
+export * from './interactors/index.js';

@@ -1,14 +1,13 @@
 /*!
- * Main API of this package.
  * Use findSolution(...) to find efficient solution for Lights Out game.
  */
 
 'use strict';
 
-import Presentation from './presentation.js';
-import State from './state.js';
-import Solution from './solution.js';
-import findStatesByPresentation from './solver.js';
+import Presentation from '../model/presentation.js';
+import State from '../model/state.js';
+import Solution from '../model/solution.js';
+import findStatesByPresentation from '../model/solver.js';
 
 /**
  * @param {Number} fieldSize
