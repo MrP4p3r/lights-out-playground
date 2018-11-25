@@ -33,7 +33,7 @@ let root = new Reef('#app_root', {
 
         let html = '';
         html += renderHeader();
-        html += renderControls(props.playMode);
+        html += renderControls(props.showSolution, props.playMode);
         html += renderGameField(size, rows, tips, props.showSolution);
         html += renderNote(props.solverSucceed);
         return html;
@@ -51,10 +51,10 @@ let renderHeader = function() {
 /**
  * Controls renderer.
  */
-let renderControls = function (playModeEnabled) {
+let renderControls = function (showSolutionEnabled, playModeEnabled) {
     let html = '';
     html += '<div id="field-controls">';
-    html += '<a id="button-solve" class="button main">Solve!</a>';
+    html += `<a id="button-solve" class="button main ${showSolutionEnabled ? 'active' : ''}">Solve!</a>`;
     html += `<a id="button-play-mode" class="button ${playModeEnabled ? 'active' : ''}">Play</a>`;
     html += '<a id="button-randomize" class="button">Randomize</a>';
     html += '<a id="button-clean" class="button">Clean</a>';
