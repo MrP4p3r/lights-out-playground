@@ -1,15 +1,11 @@
-/*!
+/*
  * State solver module.
  *
  * Use findStatesByPresentation(...) to find all states leading to a given presentation;
  */
 
-'use strict';
-
-
 import BinaryMatrixOverlay from './overlay.js';
 import CellId from './cell_id.js';
-
 
 /**
  * @typedef {{i: Number, j: Number}} CID
@@ -17,7 +13,6 @@ import CellId from './cell_id.js';
  * @typedef {Array<Assumption>} Assumptions
  * @typedef {Array<Assumptions>} AssumptionsStack
  */
-
 
 /**
  * @param {Presentation} presentation

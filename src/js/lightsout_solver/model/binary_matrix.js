@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Binary matrix class.
  * Base for all game field related classes;

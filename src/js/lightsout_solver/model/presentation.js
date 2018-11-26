@@ -1,5 +1,3 @@
-'use strict';
-
 import BinaryMatrix from './binary_matrix.js';
 import State from "./state.js";
 
@@ -18,6 +16,10 @@ export default Presentation;
 
 Presentation.prototype = Object.create(BinaryMatrix.prototype);
 
+/**
+ * @param {State} state
+ * @return {boolean}
+ */
 Presentation.prototype.fitsState = function (state) {
     if (state.size !== this.size) {
         throw 'Presentation and state sizes must match';

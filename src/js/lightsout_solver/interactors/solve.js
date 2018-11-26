@@ -1,8 +1,6 @@
-/*!
+/*
  * Use findSolution(...) to find efficient solution for Lights Out game.
  */
-
-'use strict';
 
 import Presentation from '../model/presentation.js';
 import State from '../model/state.js';

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Helper to create cell identifier object.
  *

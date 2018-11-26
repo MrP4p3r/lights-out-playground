@@ -1,8 +1,6 @@
-/*!
+/*
  * Use switchCell(...) to process click
  */
-
-'use strict';
 
 import Presentation from '../model/presentation.js';
 

@@ -1,4 +1,4 @@
-/*!
+/*
  * GUI application code
  */
 

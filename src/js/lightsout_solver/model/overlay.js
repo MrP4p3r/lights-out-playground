@@ -1,5 +1,3 @@
-'use strict';
-
 import State from './state.js';
 import CellId from './cell_id.js';
 

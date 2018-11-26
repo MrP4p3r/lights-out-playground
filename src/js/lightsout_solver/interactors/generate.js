@@ -1,8 +1,6 @@
-/*!
+/*
  * Use generate(...) to generate a new field
  */
-
-'use strict';
 
 import Presentation from '../model/presentation.js';
 import State from "../model/state.js";

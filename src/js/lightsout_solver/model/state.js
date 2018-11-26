@@ -1,7 +1,4 @@
-'use strict';
-
 import BinaryMatrix from './binary_matrix.js';
-
 
 /**
  * State class.
