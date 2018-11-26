@@ -2,6 +2,7 @@
  * Application view
  */
 
+import Reef from 'reef/dist/reef';
 import renderAppView from './renderers.js';
 
 /**

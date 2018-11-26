@@ -2,6 +2,7 @@
  * Application controller
  */
 
+import Reef from 'reef/dist/reef';
 import * as LightsOutSolver from "../lightsout_solver";
 
 /**

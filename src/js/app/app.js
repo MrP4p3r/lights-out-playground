@@ -2,6 +2,8 @@
  * GUI application code
  */
 
+import Reef from 'reef/dist/reef';
+
 import AppModel from './model.js';
 import AppView from './view.js';
 import AppController from './controller.js';

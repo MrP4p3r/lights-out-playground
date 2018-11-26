@@ -2,6 +2,8 @@
  * Dumb view functions
  */
 
+import '../../css/app.css';
+
 /**
  * @param {AppModel} props
  * @return {string}
