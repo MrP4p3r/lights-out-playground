@@ -3,7 +3,7 @@
  */
 
 import Reef from 'reef/dist/reef';
-import * as LightsOutSolver from "../lightsout_solver";
+import * as LightsOutSolver from 'lightsout_solver';
 
 /**
  * @param {Reef} state

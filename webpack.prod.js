@@ -26,4 +26,10 @@ module.exports = {
     optimization: {
         minimize: true,
     },
+    resolve: {
+        modules: [
+            path.resolve('./node_modules'),
+            path.resolve('./src'),
+        ],
+    },
 };

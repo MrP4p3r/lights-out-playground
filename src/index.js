@@ -1,3 +1,3 @@
-import { startApp } from './js/app/index.js'
+import { startApp } from './app/index.js'
 
 startApp();
