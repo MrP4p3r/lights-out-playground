@@ -13,6 +13,9 @@
     "reef": "git+https://github.com/cferdinandi/reef.git"
   },
   "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
+    "babel-loader": "^8.0.4",
     "css-loader": "^1.0.1",
     "gh-pages": "^2.0.1",
     "html-webpack-plugin": "^3.2.0",

@@ -2,8 +2,7 @@
  * Use generate(...) to generate a new field
  */
 
-import Presentation from '../model/presentation.js';
-import State from "../model/state.js";
+import { Presentation, State } from 'lightsout/model';
 
 /**
  * @param {Number} fieldSize
@@ -45,4 +44,4 @@ let generate = function (request) {
     return new GenerateResponse(presentation.items);
 };
 
-export {GenerateRequest, GenerateResponse, generate};
+export { GenerateRequest, GenerateResponse, generate };

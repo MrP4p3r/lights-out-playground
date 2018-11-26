@@ -2,7 +2,7 @@
  * Use switchCell(...) to process click
  */
 
-import Presentation from '../model/presentation.js';
+import { Presentation } from 'lightsout/model';
 
 /**
  * @param {Number} fieldSize
@@ -34,4 +34,4 @@ let switchCell = function (request) {
     return new SwitchCellResponse(presentation.items);
 };
 
-export {SwitchCellRequest, SwitchCellResponse, switchCell};
+export { SwitchCellRequest, SwitchCellResponse, switchCell };

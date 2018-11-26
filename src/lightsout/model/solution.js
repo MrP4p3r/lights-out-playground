@@ -1,4 +1,4 @@
-import BinaryMatrix from './binary_matrix.js';
+import { BinaryMatrix } from './binary_matrix';
 
 /**
  * Solution class.
@@ -7,11 +7,9 @@ import BinaryMatrix from './binary_matrix.js';
  * @extends BinaryMatrix
  * @constructor
  */
-let Solution = function (...args) {
+export let Solution = function (...args) {
     BinaryMatrix.call(this, ...args);
 };
-
-export default Solution;
 
 Solution.prototype = Object.create(BinaryMatrix.prototype);
 

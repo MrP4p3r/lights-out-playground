@@ -4,8 +4,8 @@
  * Use findStatesByPresentation(...) to find all states leading to a given presentation;
  */
 
-import BinaryMatrixOverlay from './overlay.js';
-import CellId from './cell_id.js';
+import { BinaryMatrixOverlay } from './overlay';
+import { CellId } from './cell_id';
 
 /**
  * @typedef {{i: Number, j: Number}} CID
@@ -18,7 +18,7 @@ import CellId from './cell_id.js';
  * @param {Presentation} presentation
  * @return State[]
  */
-let findStatesByPresentation = function (presentation) {
+export let findStatesByPresentation = function (presentation) {
     /** @type State[] */
     let states = [];
 
@@ -74,9 +74,6 @@ let findStatesByPresentation = function (presentation) {
     return states;
 };
 
-export default findStatesByPresentation;
-
-
 /**
  * @private
  * @param {Number} size
@@ -116,7 +113,7 @@ let _makeAssumptions = function(size, id, value, overlay) {
     /** @type Assumptions */
     let assumptions = [];
 
-    for (let values of iterBoolArrays(emptyCells.length)) {
+    for (let values of makeBoolArrays(emptyCells.length)) {
         let totalSum = values.reduce((acc, val) => (acc !== val), nonEmptyCellsSum);
         if (totalSum === value) {
             let assumption = new Map(zip(emptyCells, values));
@@ -157,17 +154,19 @@ _Indexer.prototype.get = function(pos) {
  * Generate all combinations of boolean arrays with given length
  *
  * @param {Number} length
- * @return {IterableIterator<Array<boolean>>}
+ * @return {Array<boolean>}
  */
-const iterBoolArrays = function* (length) {
+const makeBoolArrays = function (length) {
     let maxNum = 2**length;
+    let result = [];
     for (let num = 0; num < maxNum; num++) {
         let arr = [];
         for (let idx = 0; idx < length; idx++) {
             arr.push((num & (1 << idx)) > 0);
         }
-        yield arr;
+        result.push(arr);
     }
+    return result;
 };
 
 
@@ -176,15 +175,17 @@ const iterBoolArrays = function* (length) {
  *
  * @param arr
  * @param arrays
- * @return {IterableIterator<Array>}
+ * @return {Array}
  */
-const zip = function* (arr, ...arrays) {
+const zip = function (arr, ...arrays) {
     let idxLim = arrays
         .map(a => a.length)
         .reduce((acc, val) => (val < acc ? val : acc), arr.length);
+    let result = [];
     for (let idx = 0; idx < idxLim; idx++) {
-        yield [arr[idx], ...(arrays.map(a => a[idx]))];
+        result.push([arr[idx], ...(arrays.map(a => a[idx]))]);
     }
+    return result
 };
 
 

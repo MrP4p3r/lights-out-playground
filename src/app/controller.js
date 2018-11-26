@@ -3,7 +3,7 @@
  */
 
 import Reef from 'reef/dist/reef';
-import * as LightsOutSolver from 'lightsout_solver';
+import * as LightsOut from 'lightsout';
 
 /**
  * @param {Reef} state
@@ -20,8 +20,8 @@ AppController.prototype.initialize = function () {
 };
 
 AppController.prototype._makeNewField = function (size, fillDirective) {
-    let request = new LightsOutSolver.GenerateRequest(size, fillDirective);
-    let items = LightsOutSolver.generate(request).presentationMatrix;
+    let request = new LightsOut.GenerateRequest(size, fillDirective);
+    let items = LightsOut.generate(request).presentationMatrix;
 
     let tips = [];
     for (let i = 0; i < size; i++) {
@@ -65,8 +65,8 @@ AppController.prototype.solve = function () {
         data.showSolution = false;
         this.state.setData(data);
     } else {
-        let request = new LightsOutSolver.FindSolutionRequest(data.size, data.items);
-        let response = LightsOutSolver.findSolution(request);
+        let request = new LightsOut.FindSolutionRequest(data.size, data.items);
+        let response = LightsOut.findSolution(request);
         let update = {solverSucceed: response.success};
         if (response.success) {
             update.tips = response.diffMatrix;
@@ -88,8 +88,8 @@ AppController.prototype.clickCell = function (i, j) {
         this.state.setData({items: data.items, showSolution: false});
     } else {
         /* Play mode */
-        let request = new LightsOutSolver.SwitchCellRequest(data.size, data.items, i, j);
-        let response = LightsOutSolver.switchCell(request);
+        let request = new LightsOut.SwitchCellRequest(data.size, data.items, i, j);
+        let response = LightsOut.switchCell(request);
         data.items = response.newPresentationMatrix;
         if (data.solverSucceed) {
             data.tips[i][j] = data.tips[i][j] !== true;

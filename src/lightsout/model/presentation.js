@@ -1,5 +1,5 @@
-import BinaryMatrix from './binary_matrix.js';
-import State from "./state.js";
+import { BinaryMatrix } from './binary_matrix';
+import { State } from "./state";
 
 /**
  * Presentations class.
@@ -8,11 +8,9 @@ import State from "./state.js";
  * @extends BinaryMatrix
  * @constructor
  */
-let Presentation = function (...args) {
+export let Presentation = function (...args) {
     BinaryMatrix.call(this, ...args);
 };
-
-export default Presentation;
 
 Presentation.prototype = Object.create(BinaryMatrix.prototype);
 

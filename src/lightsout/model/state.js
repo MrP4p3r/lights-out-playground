@@ -1,14 +1,12 @@
-import BinaryMatrix from './binary_matrix.js';
+import { BinaryMatrix } from './binary_matrix';
 
 /**
  * State class.
  * Represents internal state of game field cells.
  */
-let State = function (...args) {
+export let State = function (...args) {
     BinaryMatrix.call(this, ...args);
 };
-
-export default State;
 
 State.prototype = Object.create(BinaryMatrix.prototype);
 

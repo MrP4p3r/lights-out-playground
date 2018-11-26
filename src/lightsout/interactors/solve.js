@@ -2,10 +2,7 @@
  * Use findSolution(...) to find efficient solution for Lights Out game.
  */
 
-import Presentation from '../model/presentation.js';
-import State from '../model/state.js';
-import Solution from '../model/solution.js';
-import findStatesByPresentation from '../model/solver.js';
+import { Presentation, State, Solution, findStatesByPresentation } from 'lightsout/model';
 
 /**
  * @param {Number} fieldSize
@@ -62,7 +59,7 @@ let findSolution = function (request) {
     return new FindSolutionResponse(true, size, solution.items);
 };
 
-export {findSolution, FindSolutionRequest, FindSolutionResponse};
+export { findSolution, FindSolutionRequest, FindSolutionResponse };
 
 /**
  * @param {Solution[]} possibleStates

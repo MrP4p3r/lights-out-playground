@@ -4,9 +4,9 @@
 
 import Reef from 'reef/dist/reef';
 
-import AppModel from './model.js';
-import AppView from './view.js';
-import AppController from './controller.js';
+import AppModel from './model';
+import AppView from './view';
+import AppController from './controller';
 
 
 let startApp = function () {
@@ -21,4 +21,4 @@ let startApp = function () {
     view.render();
 };
 
-export {startApp};
+export { startApp };

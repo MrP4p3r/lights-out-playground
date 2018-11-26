@@ -1,1 +1,1 @@
-export { startApp } from './app.js';
+export { startApp } from './app';

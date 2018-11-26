@@ -5,7 +5,7 @@
  * @param {Number} j
  * @return {{i: *, j: *}}
  */
-let CellId = (function () {
+export let CellId = (function () {
     let cached = {};
     return function (i, j) {
         if (cached[i] === undefined) {
@@ -17,5 +17,3 @@ let CellId = (function () {
         return cached[i][j];
     };
 })();
-
-export default CellId;

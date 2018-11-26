@@ -5,7 +5,7 @@
  * @param {Array<Array<boolean>>} items
  * @constructor
  */
-let BinaryMatrix = function (size, items) {
+export let BinaryMatrix = function (size, items) {
     this.size = size;
     this.items = items;
 };
@@ -23,5 +23,3 @@ BinaryMatrix.makeNewEmpty = function (size) {
 
     return new BinaryMatrix(size, items);
 };
-
-export default BinaryMatrix;

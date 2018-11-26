@@ -1,5 +1,5 @@
-import State from './state.js';
-import CellId from './cell_id.js';
+import { State } from './state';
+import { CellId } from './cell_id';
 
 /**
  * Helper for solution finding algorithm.
@@ -7,7 +7,7 @@ import CellId from './cell_id.js';
  * @param {Number} size
  * @constructor
  */
-let BinaryMatrixOverlay = function (size) {
+export let BinaryMatrixOverlay = function (size) {
     /** @type Number */
     this.size = size;
 
@@ -23,10 +23,6 @@ let BinaryMatrixOverlay = function (size) {
      */
     this._filledCellsStack = [];
 };
-
-
-export default BinaryMatrixOverlay;
-
 
 /**
  * @param {Map<{i: Number, j: Number}, boolean>} cells
