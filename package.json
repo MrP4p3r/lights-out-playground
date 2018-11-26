@@ -22,7 +22,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack.config.js",
-    "devserver": "webpack-dev-server"
+    "start-dev-server": "webpack-dev-server",
+    "build-prod": "webpack --config webpack.prod.js"
   }
 }
